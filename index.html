@@ -4,51 +4,179 @@
   <meta charset="UTF-8">
   <title>Compatibilité Amoureuse Astro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; background: #f9f6f9; max-width:400px; margin:auto; padding:1em;}
-    h1 { color: #d91e70; }
-    label, input { display:block; width:100%; margin-bottom:8px;}
-    button { background:#d91e70; color:white; border:none; padding:12px 20px; border-radius:6px; font-size:1em;}
-    .result { margin-top:20px; background:#fff3fa; padding:1em; border-radius:8px;}
-    .contact { margin-top:25px; background:#f1f1f1; padding:1em; border-radius:8px;}
+    :root {
+      --primary: #F72585;
+      --secondary: #4CC9F0;
+      --bg: #f8fafd;
+      --surface: #fff;
+      --shadow: 0 4px 24px rgba(20,20,20,0.11);
+      --radius: 1.3em;
+    }
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      background: var(--bg);
+      margin: 0; padding: 0;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    }
+    .container {
+      background: var(--surface);
+      margin: 2.5em 0 1.5em 0;
+      padding: 2em 1.2em 1.5em 1.2em;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      max-width: 390px;
+      width: 95vw;
+    }
+    h1 {
+      color: var(--primary);
+      letter-spacing: -2px;
+      font-size: 2.2em;
+      font-weight: 700;
+      margin-bottom: .1em;
+      text-align: center;
+      margin-top: 0;
+      background: linear-gradient(90deg,var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.slogan {
+      text-align: center;
+      color: #444;
+      font-size: 1.07em;
+      margin-top: 0;
+      margin-bottom: 2em;
+      letter-spacing: .01em;
+    }
+    label {
+      font-size: 1em;
+      margin-top: .8em;
+      color: #333;
+      font-weight: 500;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.85em;
+      margin-top: .3em;
+      border-radius: .7em;
+      border: 1.5px solid #e4e7ef;
+      background: #f8fafd;
+      font-size: 1em;
+      font-family: inherit;
+      box-sizing: border-box;
+      margin-bottom: .5em;
+      transition: border-color .2s;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+      background: #fff;
+    }
+    button {
+      margin-top: 1.2em;
+      padding: .85em 1.6em;
+      font-size: 1.13em;
+      font-weight: bold;
+      border: none;
+      border-radius: 3em;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(80,80,130,.12);
+      cursor: pointer;
+      transition: background .22s, transform .12s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, var(--secondary), var(--primary));
+      transform: translateY(-2px) scale(1.025);
+    }
+    .result {
+      margin-top: 2em;
+      background: linear-gradient(110deg,#f2e7fa 80%, #d7f9fc 100%);
+      border-radius: 1.2em;
+      box-shadow: 0 2px 16px rgba(120, 38, 110, 0.07);
+      padding: 1.3em 1em;
+      font-size: 1.12em;
+      color: #5a295b;
+      font-weight: 500;
+      text-align: center;
+      min-height: 3em;
+      animation: fadeIn .5s;
+    }
+    @keyframes fadeIn { from {opacity: 0;} to {opacity:1;} }
+    .contact {
+      margin-top: 2.2em;
+      background: linear-gradient(100deg, #fff0f7 60%, #e0f7fa 100%);
+      border-radius: 1.1em;
+      box-shadow: 0 2px 10px rgba(90,60,100,0.06);
+      padding: 1.2em 1em 1.2em 1em;
+      animation: fadeIn .7s;
+    }
+    .contact p {
+      font-size: 1.09em;
+      color: #632464;
+      margin-bottom: 0.9em;
+    }
+    .by {
+      margin: 1.5em auto .7em auto;
+      color: #9e3bd2;
+      font-size: .95em;
+      text-align: center;
+      opacity: .5;
+      letter-spacing: .03em;
+    }
+    @media (max-width: 470px) {
+      .container {padding: 1.2em .4em;}
+      h1 {font-size: 1.4em;}
+      .result, .contact {font-size: 1em;}
+    }
   </style>
 </head>
 <body>
-  <h1>Compatibilité Amoureuse</h1>
-  <p>Entrez vos dates de naissance pour découvrir votre compatibilité astrologique !</p>
-  <form id="astroForm">
-    <label>Prénom 1
-      <input type="text" id="name1" required>
-    </label>
-    <label>Date de naissance 1
-      <input type="date" id="dob1" required>
-    </label>
-    <label>Prénom 2
-      <input type="text" id="name2" required>
-    </label>
-    <label>Date de naissance 2
-      <input type="date" id="dob2" required>
-    </label>
-    <button type="submit">Voir la compatibilité</button>
-  </form>
-
-  <div class="result" id="result"></div>
-  <div class="contact" id="contactForm" style="display:none;">
-    <p>Pour une analyse personnalisée et complète, laissez-nous vos coordonnées :</p>
-    <form action="mailto:tonmail@exemple.com" method="post" enctype="text/plain">
-      <label>Nom
-        <input type="text" name="nom" required>
+  <div class="container">
+    <h1>💞 Astro Compatibilité 💞</h1>
+    <p class="slogan">
+      Comparez vos signes astrologiques et découvrez en un clin d’œil si les étoiles sont avec vous… ou si c’est juste pour le fun !
+    </p>
+    <form id="astroForm">
+      <label>Prénom 1
+        <input type="text" id="name1" autocomplete="off" required>
       </label>
-      <label>Email
-        <input type="email" name="email" required>
+      <label>Date de naissance 1
+        <input type="date" id="dob1" required>
       </label>
-      <label>Votre message
-        <textarea name="message" rows="3" required>Je souhaite une analyse astro complète.</textarea>
+      <label>Prénom 2
+        <input type="text" id="name2" autocomplete="off" required>
       </label>
-      <button type="submit">Envoyer</button>
+      <label>Date de naissance 2
+        <input type="date" id="dob2" required>
+      </label>
+      <button type="submit">Voir la compatibilité</button>
     </form>
-  </div>
 
+    <div class="result" id="result"></div>
+
+    <div class="contact" id="contactForm" style="display:none;">
+      <p>
+        🔮 <b>Envie d’une analyse personnalisée ?</b><br>
+        Laissez vos coordonnées, on vous contacte avec un vrai bilan astro !
+      </p>
+      <form action="mailto:tonmail@exemple.com" method="post" enctype="text/plain">
+        <label>Nom
+          <input type="text" name="nom" required>
+        </label>
+        <label>Email
+          <input type="email" name="email" required>
+        </label>
+        <label>Votre message
+          <textarea name="message" rows="3" required>Je souhaite une analyse astro complète.</textarea>
+        </label>
+        <button type="submit">Envoyer</button>
+      </form>
+    </div>
+  </div>
+  <div class="by">✨ créé avec amour par Grégory ✨</div>
 <script>
 function getSign(dateString) {
   let d = new Date(dateString);
@@ -69,24 +197,35 @@ function getSign(dateString) {
 }
 
 function astroCompat(sign1, sign2) {
-  if(sign1==sign2) return "Vous partagez le même signe ("+sign1+"). Vous vous comprenez sur bien des points, mais gare à la routine !";
+  if(sign1==sign2) return "Vous partagez le même signe ("+sign1+"). Une connexion naturelle… mais gare à la routine !";
   if((sign1=="Lion" && sign2=="Gémeaux")||(sign1=="Gémeaux"&&sign2=="Lion"))
-    return "Lion et Gémeaux : Feu et Air, ça matche ! Beaucoup de vitalité, une vraie complicité, même si chacun doit respecter l’espace de l’autre.";
-  return sign1 + " et " + sign2 + " ? Une combinaison unique ! L’astrologie vous donne des clés, mais le cœur a toujours le dernier mot.";
+    return "Lion & Gémeaux : Feu et Air, une alchimie joyeuse, pleine de rires et de projets, mais chacun doit garder sa liberté.";
+  if((sign1=="Cancer" && sign2=="Poissons")||(sign1=="Poissons"&&sign2=="Cancer"))
+    return "Cancer & Poissons : Deux signes d’eau qui se comprennent sans parler. Beaucoup d’émotion… et un petit risque de dramatiser !";
+  if((sign1=="Bélier" && sign2=="Balance")||(sign1=="Balance"&&sign2=="Bélier"))
+    return "Bélier & Balance : L’attraction des opposés ! Passion assuré, mais il faudra apprendre à faire des compromis.";
+  if((sign1=="Scorpion" && sign2=="Vierge")||(sign1=="Vierge"&&sign2=="Scorpion"))
+    return "Scorpion & Vierge : Intensité, loyauté, mais parfois un peu trop de sérieux. Le rire est votre allié !";
+  if((sign1=="Sagittaire" && sign2=="Verseau")||(sign1=="Verseau"&&sign2=="Sagittaire"))
+    return "Sagittaire & Verseau : Deux esprits libres, curieux, originaux… ensemble, c’est l’aventure ou rien !";
+  // Ajoute ici d'autres combinaisons fun si tu veux.
+  return sign1 + " & " + sign2 + " : une combinaison unique ! L’astrologie donne la météo… mais c’est vous qui faites le voyage ❤️";
 }
 
 document.getElementById("astroForm").onsubmit = function(e){
   e.preventDefault();
-  let name1 = document.getElementById("name1").value;
+  let name1 = document.getElementById("name1").value.trim();
   let dob1 = document.getElementById("dob1").value;
-  let name2 = document.getElementById("name2").value;
+  let name2 = document.getElementById("name2").value.trim();
   let dob2 = document.getElementById("dob2").value;
   let sign1 = getSign(dob1);
   let sign2 = getSign(dob2);
-  let res = "<b>" + name1 + "</b> est " + sign1 + ".<br>" + 
-            "<b>" + name2 + "</b> est " + sign2 + ".<br><br>" +
-            astroCompat(sign1, sign2);
-  document.getElementById("result").innerHTML = res + '<br><br><button onclick="document.getElementById(\'contactForm\').style.display=\'block\'">Demander une analyse complète</button>';
+  let res = `<span style="font-weight:bold;color:#c52d92">${name1 || "Personne 1"}</span> est <b>${sign1}</b>.<br>
+  <span style="font-weight:bold;color:#357ab6">${name2 || "Personne 2"}</span> est <b>${sign2}</b>.<br><br>
+  ${astroCompat(sign1, sign2)}`;
+  document.getElementById("result").innerHTML = res + `<br><br>
+    <button style="background:#fff;color:var(--primary);border:2px solid var(--primary);font-weight:600;"
+      onclick="document.getElementById('contactForm').style.display='block';this.style.display='none';return false;">Obtenir une analyse complète 🔮</button>`;
 };
 </script>
 </body>
