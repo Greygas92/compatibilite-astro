@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Compatibilité Amoureuse Astro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f6f9; max-width:400px; margin:auto; padding:1em;}
+    h1 { color: #d91e70; }
+    label, input { display:block; width:100%; margin-bottom:8px;}
+    button { background:#d91e70; color:white; border:none; padding:12px 20px; border-radius:6px; font-size:1em;}
+    .result { margin-top:20px; background:#fff3fa; padding:1em; border-radius:8px;}
+    .contact { margin-top:25px; background:#f1f1f1; padding:1em; border-radius:8px;}
+  </style>
+</head>
+<body>
+  <h1>Compatibilité Amoureuse</h1>
+  <p>Entrez vos dates de naissance pour découvrir votre compatibilité astrologique !</p>
+  <form id="astroForm">
+    <label>Prénom 1
+      <input type="text" id="name1" required>
+    </label>
+    <label>Date de naissance 1
+      <input type="date" id="dob1" required>
+    </label>
+    <label>Prénom 2
+      <input type="text" id="name2" required>
+    </label>
+    <label>Date de naissance 2
+      <input type="date" id="dob2" required>
+    </label>
+    <button type="submit">Voir la compatibilité</button>
+  </form>
+
+  <div class="result" id="result"></div>
+  <div class="contact" id="contactForm" style="display:none;">
+    <p>Pour une analyse personnalisée et complète, laissez-nous vos coordonnées :</p>
+    <form action="mailto:tonmail@exemple.com" method="post" enctype="text/plain">
+      <label>Nom
+        <input type="text" name="nom" required>
+      </label>
+      <label>Email
+        <input type="email" name="email" required>
+      </label>
+      <label>Votre message
+        <textarea name="message" rows="3" required>Je souhaite une analyse astro complète.</textarea>
+      </label>
+      <button type="submit">Envoyer</button>
+    </form>
+  </div>
+
+<script>
+function getSign(dateString) {
+  let d = new Date(dateString);
+  let m = d.getMonth() + 1, day = d.getDate();
+  if((m==1 && day>=20) || (m==2 && day<=18)) return "Verseau";
+  if((m==2 && day>=19) || (m==3 && day<=20)) return "Poissons";
+  if((m==3 && day>=21) || (m==4 && day<=19)) return "Bélier";
+  if((m==4 && day>=20) || (m==5 && day<=20)) return "Taureau";
+  if((m==5 && day>=21) || (m==6 && day<=20)) return "Gémeaux";
+  if((m==6 && day>=21) || (m==7 && day<=22)) return "Cancer";
+  if((m==7 && day>=23) || (m==8 && day<=22)) return "Lion";
+  if((m==8 && day>=23) || (m==9 && day<=22)) return "Vierge";
+  if((m==9 && day>=23) || (m==10 && day<=22)) return "Balance";
+  if((m==10 && day>=23) || (m==11 && day<=21)) return "Scorpion";
+  if((m==11 && day>=22) || (m==12 && day<=21)) return "Sagittaire";
+  if((m==12 && day>=22) || (m==1 && day<=19)) return "Capricorne";
+  return "Inconnu";
+}
+
+function astroCompat(sign1, sign2) {
+  if(sign1==sign2) return "Vous partagez le même signe ("+sign1+"). Vous vous comprenez sur bien des points, mais gare à la routine !";
+  if((sign1=="Lion" && sign2=="Gémeaux")||(sign1=="Gémeaux"&&sign2=="Lion"))
+    return "Lion et Gémeaux : Feu et Air, ça matche ! Beaucoup de vitalité, une vraie complicité, même si chacun doit respecter l’espace de l’autre.";
+  return sign1 + " et " + sign2 + " ? Une combinaison unique ! L’astrologie vous donne des clés, mais le cœur a toujours le dernier mot.";
+}
+
+document.getElementById("astroForm").onsubmit = function(e){
+  e.preventDefault();
+  let name1 = document.getElementById("name1").value;
+  let dob1 = document.getElementById("dob1").value;
+  let name2 = document.getElementById("name2").value;
+  let dob2 = document.getElementById("dob2").value;
+  let sign1 = getSign(dob1);
+  let sign2 = getSign(dob2);
+  let res = "<b>" + name1 + "</b> est " + sign1 + ".<br>" + 
+            "<b>" + name2 + "</b> est " + sign2 + ".<br><br>" +
+            astroCompat(sign1, sign2);
+  document.getElementById("result").innerHTML = res + '<br><br><button onclick="document.getElementById(\'contactForm\').style.display=\'block\'">Demander une analyse complète</button>';
+};
+</script>
+</body>
+</html>
