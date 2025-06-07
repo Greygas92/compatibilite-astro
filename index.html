@@ -13,6 +13,9 @@
       --surface: #fff;
       --shadow: 0 4px 24px rgba(20,20,20,0.11);
       --radius: 1.3em;
+      --good: #43e06c;
+      --mid: #fbbf24;
+      --bad: #e03953;
     }
     body {
       font-family: 'Montserrat', Arial, sans-serif;
@@ -96,15 +99,39 @@
       background: linear-gradient(110deg,#f2e7fa 80%, #d7f9fc 100%);
       border-radius: 1.2em;
       box-shadow: 0 2px 16px rgba(120, 38, 110, 0.07);
-      padding: 1.3em 1em;
+      padding: 1.3em 1em 2.1em 1em;
       font-size: 1.12em;
       color: #5a295b;
       font-weight: 500;
       text-align: center;
       min-height: 3em;
       animation: fadeIn .5s;
+      position: relative;
     }
-    @keyframes fadeIn { from {opacity: 0;} to {opacity:1;} }
+    .percent-bar-bg {
+      width: 100%;
+      background: #eee;
+      height: 16px;
+      border-radius: 16px;
+      margin: 1.2em 0 .7em 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 1px 5px #ddd;
+    }
+    .percent-bar {
+      height: 100%;
+      border-radius: 16px;
+      width: 0;
+      transition: width 1.1s cubic-bezier(.21,1.04,.63,.96);
+      position: absolute;
+      left: 0; top: 0;
+    }
+    .percent-label {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: .6em;
+      color: #4f036e;
+    }
     .contact {
       margin-top: 2.2em;
       background: linear-gradient(100deg, #fff0f7 60%, #e0f7fa 100%);
@@ -126,6 +153,7 @@
       opacity: .5;
       letter-spacing: .03em;
     }
+    @keyframes fadeIn { from {opacity: 0;} to {opacity:1;} }
     @media (max-width: 470px) {
       .container {padding: 1.2em .4em;}
       h1 {font-size: 1.4em;}
@@ -196,6 +224,24 @@ function getSign(dateString) {
   return "Inconnu";
 }
 
+// Table de compatibilité en pourcentage
+const compatTable = {
+  "Lion_Gémeaux": 92,
+  "Gémeaux_Lion": 92,
+  "Cancer_Poissons": 93,
+  "Poissons_Cancer": 93,
+  "Bélier_Balance": 88,
+  "Balance_Bélier": 88,
+  "Scorpion_Vierge": 81,
+  "Vierge_Scorpion": 81,
+  "Sagittaire_Verseau": 90,
+  "Verseau_Sagittaire": 90,
+  // Même signe
+  "same": 75,
+  // Par défaut
+  "default": 64
+};
+
 function astroCompat(sign1, sign2) {
   if(sign1==sign2) return "Vous partagez le même signe ("+sign1+"). Une connexion naturelle… mais gare à la routine !";
   if((sign1=="Lion" && sign2=="Gémeaux")||(sign1=="Gémeaux"&&sign2=="Lion"))
@@ -212,6 +258,19 @@ function astroCompat(sign1, sign2) {
   return sign1 + " & " + sign2 + " : une combinaison unique ! L’astrologie donne la météo… mais c’est vous qui faites le voyage ❤️";
 }
 
+function getCompatPercent(sign1, sign2) {
+  if(sign1 == sign2) return compatTable["same"];
+  const key = sign1 + "_" + sign2;
+  if(compatTable[key] !== undefined) return compatTable[key];
+  return compatTable["default"] + Math.floor(Math.random()*12)-5; // un peu d'aléatoire pour la variété
+}
+
+function getBarColor(percent) {
+  if(percent >= 85) return "var(--good)";
+  if(percent >= 70) return "var(--mid)";
+  return "var(--bad)";
+}
+
 document.getElementById("astroForm").onsubmit = function(e){
   e.preventDefault();
   let name1 = document.getElementById("name1").value.trim();
@@ -220,12 +279,33 @@ document.getElementById("astroForm").onsubmit = function(e){
   let dob2 = document.getElementById("dob2").value;
   let sign1 = getSign(dob1);
   let sign2 = getSign(dob2);
+
+  let percent = getCompatPercent(sign1, sign2);
+  let barColor = getBarColor(percent);
+
+  let percentHTML = `
+    <div class="percent-label">
+      🔥 Compatibilité : <span style="color:${barColor}">${percent}%</span>
+    </div>
+    <div class="percent-bar-bg">
+      <div class="percent-bar" style="background:${barColor};width:0"></div>
+    </div>
+  `;
+
   let res = `<span style="font-weight:bold;color:#c52d92">${name1 || "Personne 1"}</span> est <b>${sign1}</b>.<br>
   <span style="font-weight:bold;color:#357ab6">${name2 || "Personne 2"}</span> est <b>${sign2}</b>.<br><br>
-  ${astroCompat(sign1, sign2)}`;
+  ${percentHTML}
+  <div style="margin-top:.7em">${astroCompat(sign1, sign2)}</div>`;
+
   document.getElementById("result").innerHTML = res + `<br><br>
     <button style="background:#fff;color:var(--primary);border:2px solid var(--primary);font-weight:600;"
       onclick="document.getElementById('contactForm').style.display='block';this.style.display='none';return false;">Obtenir une analyse complète 🔮</button>`;
+
+  // Animation de la barre de compatibilité
+  setTimeout(() => {
+    let bar = document.querySelector('.percent-bar');
+    if(bar) bar.style.width = percent + "%";
+  }, 80);
 };
 </script>
 </body>
